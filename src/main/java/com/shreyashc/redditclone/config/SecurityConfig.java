@@ -1,5 +1,6 @@
 package com.shreyashc.redditclone.config;
 
+import com.shreyashc.redditclone.security.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @EnableWebSecurity
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
    private final UserDetailsService userDetailsService;
+   private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -36,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .anyRequest()
                 .authenticated();
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Autowired
