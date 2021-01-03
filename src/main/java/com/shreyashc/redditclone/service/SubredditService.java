@@ -4,6 +4,7 @@ package com.shreyashc.redditclone.service;
 import com.shreyashc.redditclone.dto.AuthenticationResponse;
 import com.shreyashc.redditclone.dto.SubredditDto;
 import com.shreyashc.redditclone.exceptions.SpringRedditException;
+import com.shreyashc.redditclone.mapper.SubredditMapper;
 import com.shreyashc.redditclone.model.Subreddit;
 import com.shreyashc.redditclone.repository.SubredditRepository;
 import lombok.AllArgsConstructor;
@@ -21,12 +22,13 @@ public class SubredditService {
 
     private final SubredditRepository subredditRepository;
     private final AuthService authService;
+    private final SubredditMapper subredditMapper;
 
     @Transactional(readOnly = true)
     public List<SubredditDto> getAll() {
         return subredditRepository.findAll()
                 .stream()
-                .map(this::mapToDto)
+                .map(subredditMapper::mapSubredditToDto)
                 .collect(toList());
 
     }
@@ -41,7 +43,7 @@ public class SubredditService {
     public SubredditDto getSubreddit(Long id) {
         Subreddit subreddit = subredditRepository.findById(id)
                 .orElseThrow(() -> new SpringRedditException("not found"));
-        return mapToDto(subreddit);
+        return subredditMapper.mapSubredditToDto(subreddit);
     }
 
 
